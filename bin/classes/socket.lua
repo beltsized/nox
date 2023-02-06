@@ -1,26 +1,28 @@
+-- libraries
 local ws = require('coro-websocket')
-local endp = require('../attribs/endpoints')
-local socket = {}
+local json = require('json')
+local cc = require('../class')
 
-socket.__index = socket
+-- Socket class
+local socket = cc('socket')
 
-function socket:new()
-    return setmetatable({}, socket)
+p(socket)
+
+function socket:init(client)
+    self._client = client
 end
 
-function socket:connect()
-    local opt = ws.parseUrl(endp.gate)
-    local pass, err, read, write = ws.connect(opt)
+function socket:connect(url)
+    local opt = ws.parseUrl(url)
+    local info, read, write = ws.connect(opt)
 
-    if pass then
-        self._read = read
-        self._write = write
+    self._read = read
+    self._write = write
 
-        for m in self._read do
-            self._shard:handle(m)
-        end
-    else
-        error('websocket connection failed: %s', err)
+    for m in self._read do
+        local pload = json.decode(m.payload)
+
+        self._shard:handle(m)
     end
 end
 

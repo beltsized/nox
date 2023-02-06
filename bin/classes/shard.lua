@@ -1,20 +1,13 @@
 local shard = {}
 local socket = require('./socket')
+local cc = require('../class')
+local shard = cc('shard', socket)
 
-shard.__index = shard
+function shard:init(id, client)
+    socket.init(self, client)
 
-function shard:new()
-    local inst = setmetatable({
-        _ws = socket:new()
-    }, shard)
-    
-    inst._ws._shard = inst
-
-    return inst
-end
-
-function shard:establish()
-    self._ws:connect()
+    self._id = id
+    self._client = client
 end
 
 function shard:handle()

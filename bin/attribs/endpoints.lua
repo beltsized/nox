@@ -1,5 +1,5 @@
 local endpoints = {
-    gate        = '/?v=10&encoding=json',
+    encoding    = '/?v=10&encoding=json',
     gateway     = '/gateway',
     gateway_bot = '/gateway/bot',
     guild       = '/guilds/%s',

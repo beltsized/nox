@@ -1,5 +1,4 @@
-local class = require('./bin/classes/shard')
-local shard = class:new()
+local class = require('./bin/classes/client')
+local client = class:new({ token = 'MTA3MDgzMTE3MzU3Nzc0MDMxOA.G9m9NT.ivjv5StkmKHlNrdZrfBSN5VAXD0lDQGwi8lY2g' })
 
-shard:establish()
-print(p(shard))
+client:login()

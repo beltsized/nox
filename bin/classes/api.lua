@@ -1,27 +1,34 @@
-local api = {}
 local endp = require('../attribs/endpoints')
 local http = require('coro-http')
 local json = require('json')
 local base = 'https://discord.com/api/v10'
 local format = string.format
 local insert = table.insert
+local cc = require('../class')
+local api = cc('api')
 
-api.__index = api
-
-function api:new(token)
-    return setmetatable({
-        _token = token
-    }, api)
+function api:init(client)
+    self._client = client
+    self._token = client.token
 end
 
-function api:send(method, endpoint, headers, body)
+function api:send(data)
+    local method = data.method or 'GET'
+    local endpoint = data.endpoint
+    local headers = data.headers or {}
+    local body = data.body
+
     insert(headers, {'Authorization', format('Bot %s', self._token)})
 
-    return http.request(method, format('%s/%s', base, endpoint), headers, body)
+    local origin, res = http.request(method, format('%s/%s', base, endpoint), headers, body)
+
+    return json.decode(res), origin
 end
 
 function api:getbotgateway()
-    return self:send('GET', endp.gateway_bot, {})
+    return self:send({
+        endpoint = endp.gateway_bot
+    })
 end
 
 return api
