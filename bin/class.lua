@@ -8,16 +8,16 @@ local objs   = setmetatable({}, {
 return setmetatable({}, {
     __call = function(mt, name, ...)
         local class = setmetatable({}, {
-				__call = function(t, ...)
-						local obj = setmetatable({}, t)
+						__call = function(t, ...)
+								local obj = setmetatable({}, t)
 
-						insert(objs, obj)
+								insert(objs, obj)
 
-						obj:init(...)
+								obj:init(...)
 
-						return obj
-				end
-		end})
+								return obj
+						end
+				end})
 		
         local bases   = {...}
         local getters = {}
