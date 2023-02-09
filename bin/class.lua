@@ -5,19 +5,20 @@ local objs   = setmetatable({}, {
     __mode   = 'kv'
 })
 
-function meta:__call(...)
-    local obj = setmetatable({}, self)
-
-    insert(objs, obj)
-
-    obj:init(...)
-
-    return obj
-end
-
 return setmetatable({}, {
     __call = function(mt, name, ...)
-        local class   = setmetatable({}, meta)
+        local class = setmetatable({}, {
+				__call = function(...)
+						local obj = setmetatable({}, self)
+
+						insert(objs, obj)
+
+						obj:init(...)
+
+						return obj
+				end
+		end})
+		
         local bases   = {...}
         local getters = {}
         local setters = {}
