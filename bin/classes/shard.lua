@@ -1,16 +1,30 @@
-local shard = {}
-local socket = require('./socket')
-local cc = require('../class')
-local shard = cc('shard', socket)
+local shard     = {}
+local websocket = require('./websocket')
+local class     = require('../class')
+local shard     = class('shard', websocket)
 
 function shard:init(id, client)
-    socket.init(self, client)
+    websocket.init(self, client)
 
     self._id = id
-    self._client = client
+    self._seq = nil
 end
 
-function shard:handle()
+function shard:identify()
+end
+
+function shard:startheart()
+end
+
+function shard:stopheart()
+end
+
+function shard:heartbeat()
+    
+end
+
+function shard:acknowledge(pl)
+    p(pl)
 end
 
 return shard

@@ -1,37 +1,40 @@
-local client = {}
-local endp = require('../attribs/endpoints')
-local api = require('./api')
-local shard = require('./shard')
-local insert = table.insert
+local api     = require('./api')
+local shard   = require('./shard')
+local class   = require('../class')
+local emitter = require('./emitter')
+local client  = class('client', emitter)
 
-client.__index = client
+local insert  = table.insert
+local wrap    = coroutine.wrap
 
-function client:new(meta)
-    self.token = meta.token
+local ENDPOINTS = require('../attribs/endpoints')
 
+function client:init(data)
+    emitter.init(self)
+    
+    self._token      = data.token
     self._shardcount = 1
-    self._api = api:new(self.token)
-    self._shards = {}
+    self._api        = api(self)
+    self._shards     = {}
+end
 
+function client:login()
     for i = 1, self._shardcount do
-        local newshard = shard:new()
-
-        newshard.id = i
+        local newshard = shard(i, self)
 
         insert(self._shards, newshard)
     end
 
     print('shards loaded')
 
-    return setmetatable({}, client)
-end
+    local gateway = self._api:getclientgateway()
 
-function client:login()
-    local gateway = self._api:getbotgateway()
-    local url = gateway.url .. endp.encoding
+    if gateway:find('nil') then
+        error('bad token')
+    end
 
-    for i, v in ipairs(self._shards) do
-        v:connect(url)
+    for _, s in ipairs(self._shards) do
+        wrap(s.connect)(s, gateway)
     end
 
     print('shards established')

@@ -1,10 +1,9 @@
-local endpoints = {
-    encoding    = '/?v=10&encoding=json',
-    gateway     = '/gateway',
-    gateway_bot = '/gateway/bot',
-    guild       = '/guilds/%s',
-    me          = '/users/@me',
-    user        = '/users/%s'
+local ENDPOINTS = {
+    GATEWAY        = '/gateway',
+    GATEWAY_CLIENT = '/gateway/bot',
+    GUILD          = '/guilds/%s',
+    USER           = '/users/%s',
+    CLIENT_USER    = '/users/@me'
 }
 
-return endpoints
+return ENDPOINTS
